@@ -15,16 +15,21 @@ const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 const animeRouter = require('./routes/getAnime');
 
+const staticPath = path.join(__dirname, "/public");
+const viewsPath = path.join(__dirname, "/views");
+const partialsPath = path.join(__dirname, "/views/entries");
+
 // Импортируем созданный в отдельный файлах рутеры.
 const app = express();
 // Сообщаем express, что в качестве шаблонизатора используется "hbs".
 app.set('view engine', 'hbs');
-// Сообщаем express, что шаблона шаблонизаторая (вью) находятся в папке "ПапкаПроекта/views".
-hbs.registerPartials(__dirname+'/views/entries');
+app.set("views", viewsPath)
+app.use(express.static(staticPath))
+hbs.registerPartials(partialsPath)
 // Подключаем middleware morgan с режимом логирования "dev", чтобы для каждого HTTP-запроса на сервер в консоль выводилась информация об этом запросе.
 app.use(logger('dev'));
 // Подключаем middleware, которое сообщает epxress, что в папке "ПапкаПроекта/public" будут находится статические файлы, т.е. файлы доступные для скачивания из других приложений.
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 // Подключаем middleware, которое позволяет читать содержимое body из HTTP-запросов типа POST, PUT и DELETE.
 app.use(express.urlencoded({ extended: true }));
 // Подключаем middleware, которое позволяет читать переменные JavaScript, сохранённые в формате JSON в body HTTP-запроса.
