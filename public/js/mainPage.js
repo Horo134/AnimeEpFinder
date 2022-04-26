@@ -4,7 +4,6 @@ const go = document.querySelector('.go')
 const input = document.querySelector('.input')
 
 let count = window.location.pathname.slice(6)
-console.log(count);
 
 next.addEventListener('click', (e) => {
     count++
