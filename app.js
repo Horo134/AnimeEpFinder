@@ -8,6 +8,7 @@ const FileStore = require('session-file-store')(session);
 const path = require('path');
 
 const hbs = require('hbs');
+const expressHbs = require("express-handlebars");
 const { sessionLogger, userName } = require('./middleware/sessionLogger');
 const mainRouter = require('./routes/main');
 const registerRouter = require('./routes/register');
@@ -17,9 +18,16 @@ const animeRouter = require('./routes/getAnime');
 
 // Импортируем созданный в отдельный файлах рутеры.
 const app = express();
+// устанавливаем настройки для файлов layout
+app.engine("hbs", expressHbs.engine(
+  {
+      layoutsDir: "views", 
+      defaultLayout: "layout",
+      extname: "hbs"
+  }
+))
 // Сообщаем express, что в качестве шаблонизатора используется "hbs".
 app.set('view engine', 'hbs');
-app.set('views', './views')
 // Сообщаем express, что шаблона шаблонизаторая (вью) находятся в папке "ПапкаПроекта/views".
 hbs.registerPartials(`${__dirname}/views`);
 // Подключаем middleware morgan с режимом логирования "dev", чтобы для каждого HTTP-запроса на сервер в консоль выводилась информация об этом запросе.
