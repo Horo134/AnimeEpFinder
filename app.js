@@ -8,7 +8,6 @@ const FileStore = require('session-file-store')(session);
 const path = require('path');
 
 const hbs = require('hbs');
-const expressHbs = require("express-handlebars");
 const { sessionLogger, userName } = require('./middleware/sessionLogger');
 const mainRouter = require('./routes/main');
 const registerRouter = require('./routes/register');
@@ -18,18 +17,11 @@ const animeRouter = require('./routes/getAnime');
 
 // Импортируем созданный в отдельный файлах рутеры.
 const app = express();
-// устанавливаем настройки для файлов layout
-app.engine("hbs", expressHbs.engine(
-  {
-      layoutsDir: "views", 
-      defaultLayout: "layout",
-      extname: "hbs"
-  }
-))
 // Сообщаем express, что в качестве шаблонизатора используется "hbs".
 app.set('view engine', 'hbs');
 // Сообщаем express, что шаблона шаблонизаторая (вью) находятся в папке "ПапкаПроекта/views".
-hbs.registerPartials(`${__dirname}/views/entries`);
+app.set('views', path.join(__dirname, 'views'));
+// hbs.registerPartials(`${__dirname}/views`);
 // Подключаем middleware morgan с режимом логирования "dev", чтобы для каждого HTTP-запроса на сервер в консоль выводилась информация об этом запросе.
 app.use(logger('dev'));
 // Подключаем middleware, которое сообщает epxress, что в папке "ПапкаПроекта/public" будут находится статические файлы, т.е. файлы доступные для скачивания из других приложений.
@@ -38,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 // Подключаем middleware, которое позволяет читать переменные JavaScript, сохранённые в формате JSON в body HTTP-запроса.
 app.use(express.json());
+
 
 const sessionConfig = {
     store: new FileStore(),
